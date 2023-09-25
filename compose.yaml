@@ -1,0 +1,12 @@
+services:
+  mysqldb:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: exampleBank
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: dev
+    ports:
+      - 3306:3306
+    volumes:
+        - ./mysql:/var/lib/mysql
