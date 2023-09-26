@@ -18,7 +18,7 @@ CREATE TABLE `authorities` (
 INSERT IGNORE INTO `users` VALUES (NULL, 'dev', 'dev', '1');
 INSERT IGNORE INTO `authorities` VALUES (NULL, 'dev', 'WRITE');
 
-CREATE TABLE `usersDetails` (
+CREATE TABLE `users_details` (
                             `id` int NOT NULL AUTO_INCREMENT,
                             `email` varchar(45) NOT NULL,
                             `pwd` varchar(45) NOT NULL,
@@ -26,5 +26,5 @@ CREATE TABLE `usersDetails` (
                             PRIMARY KEY (`id`)
 );
 
-INSERT INTO `usersDetails` (`email`, `pwd`, `role`)
+INSERT INTO `users_details` (`email`, `pwd`, `role`)
 VALUES ('johndoe@example.com', 'pass', 'ADMIN');

@@ -1,38 +1,34 @@
 package com.example.bank.config;
 
-import org.slf4j.spi.NOPLoggingEventBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-import javax.sql.DataSource;
+import static org.springframework.security.config.Customizer.withDefaults;
 
 /**
  * @author Girdhar Singh Rathore
  * @date Monday, September 25, 2023, 11:49 AM
  */
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
+
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests((requests) -> {
-            requests.requestMatchers("/accounts/**", "/balance/**", "/loans/**", "/cards/**").authenticated();
-            requests.requestMatchers("/actuator/**", "/contact", "/notices").permitAll();
-            ((AuthorizeHttpRequestsConfigurer.AuthorizedUrl) requests.anyRequest()).authenticated();
-        });
-        http.formLogin(Customizer.withDefaults());
-        http.httpBasic(Customizer.withDefaults());
+
+        http.authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/accounts/**", "/balance/**", "/loans/**", "/cards/**").authenticated()
+                        .requestMatchers("/register/**", "/actuator/**", "/contact", "/notices").permitAll())
+                .formLogin(withDefaults())
+                .httpBasic(withDefaults())
+                .csrf(csrf -> csrf.disable())
+        ;
         return http.build();
     }
 
@@ -59,11 +55,12 @@ public class SecurityConfig {
         return new InMemoryUserDetailsManager(admin, user);
     }
     */
-    @Bean
+
+    // I have created custom UserDetailsRepository and UserDetails classes.
+/*    @Bean
     public UserDetailsService userDetailsService(DataSource dataSource) {
         return new JdbcUserDetailsManager(dataSource);
-    }
-
+    }*/
     @Bean
     public PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();

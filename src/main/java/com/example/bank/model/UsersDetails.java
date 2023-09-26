@@ -1,9 +1,6 @@
 package com.example.bank.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,9 +9,11 @@ import org.springframework.web.bind.annotation.GetMapping;
  * @author Girdhar Singh Rathore
  * @date Monday, September 25, 2023, 10:17 PM
  */
-@Entity
+
 @Getter
 @Setter
+@Table(name = "users_details")
+@Entity
 public class UsersDetails {
 
     @Id
