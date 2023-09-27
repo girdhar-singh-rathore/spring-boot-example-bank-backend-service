@@ -3,6 +3,7 @@ package com.example.bank.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /**
@@ -17,7 +18,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class UsersDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="native")
+    @GenericGenerator(name = "native", strategy = "native")
     private Long id;
 
     private String email;
