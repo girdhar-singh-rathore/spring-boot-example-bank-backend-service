@@ -21,7 +21,7 @@ INSERT IGNORE INTO `authorities` VALUES (NULL, 'dev', 'WRITE');
 CREATE TABLE `users_details` (
                             `id` int NOT NULL AUTO_INCREMENT,
                             `email` varchar(45) NOT NULL,
-                            `pwd` varchar(45) NOT NULL,
+                            `pwd` varchar(256) NOT NULL,
                             `role` varchar(45) NOT NULL,
                             PRIMARY KEY (`id`)
 );
