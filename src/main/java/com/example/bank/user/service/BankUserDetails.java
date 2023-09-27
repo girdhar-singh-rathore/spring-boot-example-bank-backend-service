@@ -1,4 +1,4 @@
-package com.example.bank.user.service;
+/*package com.example.bank.user.service;
 
 import com.example.bank.model.UsersDetails;
 import com.example.bank.repository.UsersDetailsRepository;
@@ -11,13 +11,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.List;*/
 
 /**
  * @author Girdhar Singh Rathore
  * @date Monday, September 25, 2023, 10:35 PM
  */
+// NOTE: This class is not used in the project, since we are using BankUsernamePwdAuthenticationProvider.java
 
+/*
 @Service
 public class BankUserDetails implements UserDetailsService {
 
@@ -45,3 +47,4 @@ public class BankUserDetails implements UserDetailsService {
         return new User(userName, password, authorities);
     }
 }
+*/
