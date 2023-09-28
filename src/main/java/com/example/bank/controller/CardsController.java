@@ -1,7 +1,13 @@
 package com.example.bank.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import com.example.bank.model.Cards;
+import com.example.bank.model.Customer;
+import com.example.bank.repository.CardsRepository;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @author Girdhar Singh Rathore
@@ -11,8 +17,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CardsController {
 
-    @GetMapping("/cards")
-    public String getCardsDetails() {
-        return "Cards Details";
+    private CardsRepository cardsRepository;
+
+    public CardsController(CardsRepository cardsRepository) {
+        this.cardsRepository = cardsRepository;
+    }
+
+    @PostMapping("/cards")
+    public List<Cards> getCardDetails(@RequestBody Customer customer) {
+        List<Cards> cards = cardsRepository.findByCustomerId(customer.getId());
+        if (cards != null) {
+            return cards;
+        } else {
+            return null;
+        }
     }
 }

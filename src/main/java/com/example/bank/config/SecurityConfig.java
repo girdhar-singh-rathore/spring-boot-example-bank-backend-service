@@ -1,5 +1,7 @@
 package com.example.bank.config;
 
+import com.example.bank.filter.CsrfCookieFilter;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -7,6 +9,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -20,13 +27,18 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+        CsrfTokenRequestAttributeHandler csrfTokenHandler = new CsrfTokenRequestAttributeHandler();
+        csrfTokenHandler.setCsrfRequestAttributeName("_csrf");
 
-        http.authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/accounts/**", "/balance/**", "/loans/**", "/cards/**").authenticated()
-                        .requestMatchers("/register/**", "/actuator/**", "/contact", "/notices").permitAll())
+        http.csrf(csrf -> csrf.csrfTokenRequestHandler(csrfTokenHandler).ignoringRequestMatchers("/contact","/register/**")
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+                .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/accounts/**", "/balance/**", "/loans/**", "/cards/**","/contact").authenticated()
+                        .requestMatchers("/register/**", "/actuator/**","/notices").permitAll())
                 .formLogin(withDefaults())
                 .httpBasic(withDefaults())
-                .csrf(csrf -> csrf.disable())
+
         ;
         return http.build();
     }

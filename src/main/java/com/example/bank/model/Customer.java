@@ -1,29 +1,34 @@
 package com.example.bank.model;
 
 import jakarta.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * @author Girdhar Singh Rathore
- * @date Monday, September 25, 2023, 10:17 PM
+ * @date Monday, September 27, 2023, 08:22 PM
  */
-
+@Entity
 @Getter
 @Setter
-@Table(name = "users_details")
-@Entity
-public class UsersDetails {
+public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="native")
     @GenericGenerator(name = "native", strategy = "native")
-    private Long id;
-
+    @Column(name = "customer_id")
+    private int id;
+    private String name;
     private String email;
+    @Column(name = "mobile_number")
+    private String mobileNumber;
+
     private String pwd;
     private String role;
+    @Column(name = "create_dt")
+    private String createDt;
 
 }

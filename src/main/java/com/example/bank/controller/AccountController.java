@@ -1,6 +1,10 @@
 package com.example.bank.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import com.example.bank.model.Accounts;
+import com.example.bank.model.Customer;
+import com.example.bank.repository.AccountsRepository;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -10,9 +14,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AccountController {
 
-    @GetMapping("/accounts")
-    public String getAccountDetails() {
-        return "Account Details";
+    private AccountsRepository accountsRepository;
+
+    public AccountController(AccountsRepository accountsRepository) {
+        this.accountsRepository = accountsRepository;
+    }
+
+    @PostMapping("/accounts")
+    public Accounts getAccountDetails(@RequestBody Customer customer) {
+        Accounts accounts = accountsRepository.findByCustomerId(customer.getId());
+        if (accounts != null) {
+            return accounts;
+        } else {
+            return null;
+        }
     }
 
 }

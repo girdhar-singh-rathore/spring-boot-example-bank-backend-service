@@ -1,7 +1,7 @@
-package com.example.bank.user.controller;
+package com.example.bank.controller;
 
-import com.example.bank.model.UsersDetails;
-import com.example.bank.repository.UsersDetailsRepository;
+import com.example.bank.model.Customer;
+import com.example.bank.repository.CustomerRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,24 +16,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class LoginController {
 
-    private UsersDetailsRepository usersDetailsRepository;
+    private CustomerRepository customerRepository;
 
     private PasswordEncoder passwordEncoder;
 
-    public LoginController(UsersDetailsRepository usersDetailsRepository,
+    public LoginController(CustomerRepository customerRepository,
                            PasswordEncoder passwordEncoder) {
-        this.usersDetailsRepository = usersDetailsRepository;
+        this.customerRepository = customerRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody UsersDetails usersDetails) {
+    public ResponseEntity<String> registerUser(@RequestBody Customer customer) {
 
         ResponseEntity response = null;
         try {
-            String hashedPassword = passwordEncoder.encode(usersDetails.getPwd());
-            usersDetails.setPwd(hashedPassword);
-            UsersDetails savedUser = usersDetailsRepository.save(usersDetails);
+            String hashedPassword = passwordEncoder.encode(customer.getPwd());
+            customer.setPwd(hashedPassword);
+            Customer savedUser = customerRepository.save(customer);
             if (savedUser.getId() > 0) {
                 response = ResponseEntity
                         .status(HttpStatus.CREATED)
