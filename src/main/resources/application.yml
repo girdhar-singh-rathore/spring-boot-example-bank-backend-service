@@ -13,6 +13,7 @@ spring:
 logging:
   level:
     root: info
+    org.springframework.security.web.FilterChainProxy: debug
 
 #  security:
 #    user:

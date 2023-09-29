@@ -1,19 +1,19 @@
 package com.example.bank.config;
 
+import com.example.bank.filter.AuthoritiesLoggingAfterFilter;
+import com.example.bank.filter.AuthoritiesLoggingAtFilter;
 import com.example.bank.filter.CsrfCookieFilter;
-import jakarta.servlet.http.HttpServletRequest;
+import com.example.bank.filter.RequestValidationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -22,7 +22,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
  * @date Monday, September 25, 2023, 11:49 AM
  */
 @Configuration
-@EnableWebSecurity
 public class SecurityConfig {
 
     @Bean
@@ -30,9 +29,20 @@ public class SecurityConfig {
         CsrfTokenRequestAttributeHandler csrfTokenHandler = new CsrfTokenRequestAttributeHandler();
         csrfTokenHandler.setCsrfRequestAttributeName("_csrf");
 
-        http.csrf(csrf -> csrf.csrfTokenRequestHandler(csrfTokenHandler).ignoringRequestMatchers("/contact","/register/**")
+        http.securityContext(context ->
+                context.requireExplicitSave(false)
+        );
+        http.securityContext(session -> {
+        }).sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+        );
+
+        http.csrf(csrf -> csrf.csrfTokenRequestHandler(csrfTokenHandler).ignoringRequestMatchers("/contact", "/register/**")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+                .addFilterBefore(new RequestValidationFilter(), BasicAuthenticationFilter.class)
+                .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
+                .addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests((requests) -> requests
                         /*.requestMatchers("/accounts").hasAuthority("VIEWACCOUNT")
                         .requestMatchers("/balance").hasAnyAuthority("VIEWACCOUNT", "VIEWBALANCE")
@@ -42,8 +52,8 @@ public class SecurityConfig {
                         .requestMatchers("/balance").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/loans").hasRole("USER")
                         .requestMatchers("/cards").hasRole("USER")
-                        .requestMatchers("/user","/contact").authenticated()
-                        .requestMatchers("/register/**", "/actuator/**","/notices").permitAll())
+                        .requestMatchers("/user", "/contact").authenticated()
+                        .requestMatchers("/register/**", "/actuator/**", "/notices").permitAll())
                 .formLogin(withDefaults())
                 .httpBasic(withDefaults())
 
