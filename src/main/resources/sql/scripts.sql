@@ -28,3 +28,31 @@ CREATE TABLE `users_details` (
 
 INSERT INTO `users_details` (`email`, `pwd`, `role`)
 VALUES ('johndoe@example.com', 'pass', 'ADMIN');
+
+CREATE TABLE `authority` (
+                                `id` int NOT NULL AUTO_INCREMENT,
+                                `customer_id` int NOT NULL,
+                                `name` varchar(50) NOT NULL,
+                                PRIMARY KEY (`id`),
+                                KEY `customer_id` (`customer_id`),
+                                CONSTRAINT `authorities_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`)
+);
+
+INSERT INTO `authority` (`customer_id`, `name`)
+VALUES (1, 'VIEWACCOUNT');
+
+INSERT INTO `authority` (`customer_id`, `name`)
+VALUES (1, 'VIEWLOAN');
+
+INSERT INTO `authority` (`customer_id`, `name`)
+VALUES (1, 'VIEWCARD');
+
+INSERT INTO `authority` (`customer_id`, `name`)
+VALUES (1, 'VIEWBALANCE');
+
+
+INSERT INTO `authority` (`customer_id`, `name`)
+VALUES (1, 'ROLE_ADMIN');
+
+INSERT INTO `authority` (`customer_id`, `name`)
+VALUES (1, 'ROLE_USER');
