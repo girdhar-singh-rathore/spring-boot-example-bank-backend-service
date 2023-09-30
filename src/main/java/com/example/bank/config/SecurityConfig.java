@@ -3,6 +3,7 @@ package com.example.bank.config;
 import com.example.bank.filter.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,6 +20,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
  * @date Monday, September 25, 2023, 11:49 AM
  */
 @Configuration
+@EnableMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig {
 
     @Bean
@@ -45,7 +47,7 @@ public class SecurityConfig {
                         .requestMatchers("/cards").hasAuthority("VIEWCARD")*/
                         .requestMatchers("/accounts").hasRole("USER")
                         .requestMatchers("/balance").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/loans").hasRole("USER")
+                        .requestMatchers("/loans").authenticated()
                         .requestMatchers("/cards").hasRole("USER")
                         .requestMatchers("/user", "/contact").authenticated()
                         .requestMatchers("/register/**", "/actuator/**", "/notices").permitAll())

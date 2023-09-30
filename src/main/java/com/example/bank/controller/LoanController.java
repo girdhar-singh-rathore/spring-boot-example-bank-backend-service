@@ -3,6 +3,8 @@ package com.example.bank.controller;
 import com.example.bank.model.Customer;
 import com.example.bank.model.Loans;
 import com.example.bank.repository.LoanRepository;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +25,8 @@ public class LoanController {
     }
 
     @PostMapping("/loans")
+    @PreAuthorize("hasRole('USER')")
+    @PostAuthorize("hasRole('USER')")
     public List<Loans> getLoanDetails(@RequestBody Customer customer) {
         List<Loans> loans = loanRepository.findByCustomerIdOrderByStartDtDesc(customer.getId());
         if (loans != null) {
