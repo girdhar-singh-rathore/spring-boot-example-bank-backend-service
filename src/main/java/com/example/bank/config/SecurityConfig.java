@@ -1,9 +1,6 @@
 package com.example.bank.config;
 
-import com.example.bank.filter.AuthoritiesLoggingAfterFilter;
-import com.example.bank.filter.AuthoritiesLoggingAtFilter;
-import com.example.bank.filter.CsrfCookieFilter;
-import com.example.bank.filter.RequestValidationFilter;
+import com.example.bank.filter.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,23 +23,21 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        CsrfTokenRequestAttributeHandler csrfTokenHandler = new CsrfTokenRequestAttributeHandler();
-        csrfTokenHandler.setCsrfRequestAttributeName("_csrf");
+//        CsrfTokenRequestAttributeHandler csrfTokenHandler = new CsrfTokenRequestAttributeHandler();
+//        csrfTokenHandler.setCsrfRequestAttributeName("_csrf");
 
-        http.securityContext(context ->
-                context.requireExplicitSave(false)
-        );
-        http.securityContext(session -> {
-        }).sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-        );
+        http.sessionManagement(sessionManagement ->
+                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http.csrf(csrf -> csrf.csrfTokenRequestHandler(csrfTokenHandler).ignoringRequestMatchers("/contact", "/register/**")
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+        /*http.csrf(csrf -> csrf.csrfTokenRequestHandler(csrfTokenHandler).ignoringRequestMatchers("/contact", "/register/**")
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))*/
+        http.csrf(csrf -> csrf.disable())
+                //.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .addFilterBefore(new RequestValidationFilter(), BasicAuthenticationFilter.class)
                 .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
                 .addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
+                .addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
+                .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests((requests) -> requests
                         /*.requestMatchers("/accounts").hasAuthority("VIEWACCOUNT")
                         .requestMatchers("/balance").hasAnyAuthority("VIEWACCOUNT", "VIEWBALANCE")
