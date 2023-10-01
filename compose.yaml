@@ -9,4 +9,20 @@ services:
     ports:
       - 3306:3306
     volumes:
-        - ./mysql:/var/lib/mysql
+      - ./mysql:/var/lib/mysql
+    networks:
+      - spring-cloud-network
+  bank-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: com.example/examplebank
+    ports:
+      - 8080:8080
+    depends_on:
+      - mysqldb
+    networks:
+      - spring-cloud-network
+networks:
+  spring-cloud-network:
+    driver: bridge
